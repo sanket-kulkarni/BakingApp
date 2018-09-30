@@ -76,15 +76,11 @@ public class FragmentRecipeDetailsList extends Fragment implements RecipeDescrip
         View view = inflater.inflate(R.layout.fragment_details_y, container, false);
         unbinder = ButterKnife.bind(this, view);
         Bundle args = getArguments();
-//        if (null !=args && args.containsKey("isTest")){
-//            isEspressoTest =true;
-//        }
-//        if (!isEspressoTest) {
+
         assert ((RecipeListActivity) getActivity()) != null;
         ((RecipeListActivity) getActivity()).
                     setOnBackPressedListener(new BaseBackPressedListener((AppCompatActivity) getContext()));
 
-        //}
         return view;
     }
 
