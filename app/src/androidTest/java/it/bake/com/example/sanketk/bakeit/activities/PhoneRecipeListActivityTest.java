@@ -28,10 +28,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
-
+/*
+* This Test is to be done on Phone device only(not tablet)
+*/
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RecipeListActivityTest {
+public class PhoneRecipeListActivityTest {
 
     @Rule
     public ActivityTestRule<RecipeListActivity> mActivityTestRule = new ActivityTestRule<>(RecipeListActivity.class);

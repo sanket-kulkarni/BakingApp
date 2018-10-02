@@ -447,5 +447,31 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+       // if (recipeVideoPlayer != null) {
+//            resumeWindow = recipeVideoPlayer.getCurrentWindowIndex();
+//            resumePosition = recipeVideoPlayer.isCurrentWindowSeekable() ? Math.max(0, recipeVideoPlayer.getCurrentPosition())
+//                    : C.TIME_UNSET;
+            outState.putInt("resumeWindow", resumeWindow);
+            outState.putLong("resumePosition", resumePosition);
+       // }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(null!=savedInstanceState) {
+            resumeWindow = savedInstanceState.getInt("resumeWindow");
+            resumePosition = savedInstanceState.getLong("resumePosition");
+            if (null != recipeVideoPlayer) {
+                boolean haveResumePosition = resumeWindow != C.INDEX_UNSET;
+                if (haveResumePosition) {
+                    recipeVideoPlayer.seekTo(resumeWindow, resumePosition);
+                }
+            }
+        }
+    }
 
 }
