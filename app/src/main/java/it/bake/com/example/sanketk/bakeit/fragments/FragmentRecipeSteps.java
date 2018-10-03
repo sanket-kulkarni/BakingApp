@@ -95,6 +95,7 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
     private TrackSelector trackSelector;
     private int resumeWindow;
     private long resumePosition;
+    private boolean autoPlay;
     private Handler mainHandler;
     private static final CookieManager DEFAULT_COOKIE_MANAGER;
 
@@ -320,6 +321,8 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
 // Bind the player to the view.
 
         mExoplayer.setPlayer(recipeVideoPlayer);
+        recipeVideoPlayer.setPlayWhenReady(autoPlay);
+
 
         if (TextUtils.isEmpty(mSteps.getVideoURL())) {
 
@@ -340,7 +343,7 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
             }
             recipeVideoPlayer.prepare(videoSource, !haveResumePosition, false);
 
-            recipeVideoPlayer.setPlayWhenReady(true);
+            recipeVideoPlayer.setPlayWhenReady(autoPlay);
 
 
             recipeVideoPlayer.addListener(new ExoPlayer.EventListener() {
@@ -428,12 +431,14 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
     }
 
     private void updateResumePosition() {
+        autoPlay = recipeVideoPlayer.getPlayWhenReady();
         resumeWindow = recipeVideoPlayer.getCurrentWindowIndex();
         resumePosition = recipeVideoPlayer.isCurrentWindowSeekable() ? Math.max(0, recipeVideoPlayer.getCurrentPosition())
                 : C.TIME_UNSET;
     }
 
     private void clearResumePosition() {
+        autoPlay=false;
         resumeWindow = C.INDEX_UNSET;
         resumePosition = C.TIME_UNSET;
     }
@@ -450,13 +455,10 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-       // if (recipeVideoPlayer != null) {
-//            resumeWindow = recipeVideoPlayer.getCurrentWindowIndex();
-//            resumePosition = recipeVideoPlayer.isCurrentWindowSeekable() ? Math.max(0, recipeVideoPlayer.getCurrentPosition())
-//                    : C.TIME_UNSET;
+
             outState.putInt("resumeWindow", resumeWindow);
             outState.putLong("resumePosition", resumePosition);
-       // }
+            outState.putBoolean("autoPlay", autoPlay);
     }
 
     @Override
@@ -465,10 +467,12 @@ public class FragmentRecipeSteps extends Fragment implements PlaybackControlView
         if(null!=savedInstanceState) {
             resumeWindow = savedInstanceState.getInt("resumeWindow");
             resumePosition = savedInstanceState.getLong("resumePosition");
+            autoPlay = savedInstanceState.getBoolean("autoPlay");
             if (null != recipeVideoPlayer) {
                 boolean haveResumePosition = resumeWindow != C.INDEX_UNSET;
                 if (haveResumePosition) {
                     recipeVideoPlayer.seekTo(resumeWindow, resumePosition);
+                    recipeVideoPlayer.setPlayWhenReady(autoPlay);
                 }
             }
         }
